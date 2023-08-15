@@ -1,5 +1,6 @@
 #include "Window.h"
-#include "Game.h"
+
+Window* window = new Window();
 
 int main(void)
 {
@@ -7,7 +8,7 @@ int main(void)
     if (!glfwInit())
         return -1;
 
-    Window* window = new Window();
-
     window->InitWindow();
+
+    delete window;
 }

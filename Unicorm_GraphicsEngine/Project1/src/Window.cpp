@@ -1,36 +1,49 @@
 #include "Window.h"
+#include "Renderer.h"
+
+Renderer* renderer = new Renderer();
+
+int Window::WindowChecker()
+{
+    if (!glfwWindow)
+    {
+        CloseWindow();
+
+        return -1;
+    }
+}
+
+void Window::CloseWindow()
+{
+    glfwTerminate();
+}
+
+void Window::MakeCurrentContext(GLFWwindow* glfwWindow)
+{
+    /* Make the window's context current */
+    glfwMakeContextCurrent(glfwWindow);
+}
 
 int Window::InitWindow()
 {
-    GLFWwindow* window;
-
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Unicorm Engine", NULL, NULL);
+    glfwWindow = glfwCreateWindow(width, height, title, NULL, glfwWindow);
 
-    if (!window)
-    {
-        glfwTerminate();
-        
-        return -1;
-    }
+    WindowChecker();
 
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
+    MakeCurrentContext(glfwWindow);
 
     /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(glfwWindow))
     {
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+        renderer->ClearScreen();
 
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
-
-        /* Poll for and process events */
-        glfwPollEvents();
+        renderer->PostRender(glfwWindow);
     }
 
-    glfwTerminate();
-    
+    CloseWindow();
+
+    delete renderer;
+
     return 0;
 }
